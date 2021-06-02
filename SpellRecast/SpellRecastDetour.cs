@@ -3,9 +3,9 @@ using RecastSharp.DetourNative;
 
 namespace SpellRecast
 {
-    public class SpellRecastDetour
+    public static class SpellRecastDetour
     {
-        public void Test()
+        public static void Test()
         {
             IntPtr naviMeshQuery = DetourNative.dtwAllocNavMeshQuery();
             
