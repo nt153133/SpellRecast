@@ -1,0 +1,3 @@
+[submodule "RecastSharp"]
+	path = RecastSharp
+	url = https://github.com/nt153133/RecastSharp.git
