@@ -23,7 +23,7 @@
         <WarningLevel>4</WarningLevel>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-        <PlatformTarget>AnyCPU</PlatformTarget>
+        <PlatformTarget>x64</PlatformTarget>
         <DebugType>pdbonly</DebugType>
         <Optimize>true</Optimize>
         <OutputPath>bin\Release\</OutputPath>
@@ -43,10 +43,6 @@
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\RecastSharp\RecastSharp\RecastSharp\RecastSharp.csproj">
-        <Project>{948cf43b-4917-488b-98cd-0d7deffa12e1}</Project>
-        <Name>RecastSharp</Name>
-      </ProjectReference>
       <ProjectReference Include="..\SpellRecast\SpellRecast.csproj">
         <Project>{e3f6727d-5e8f-487d-8c8d-ff76b5cb048f}</Project>
         <Name>SpellRecast</Name>

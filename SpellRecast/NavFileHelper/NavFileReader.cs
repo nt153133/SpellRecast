@@ -12,7 +12,7 @@ namespace SpellRecast.NavFileHelper
 
         private const int NAVMESHSET_MAGIC = 'M' << 24 | 'S' << 16 | 'E' << 8 | 'T'; //'MSET'
         private const int NAVMESHSET_VERSION = 1;
-
+        
         /*
         public static bool LoadFromFile(string fileName, out IntPtr navMesh)
         {
