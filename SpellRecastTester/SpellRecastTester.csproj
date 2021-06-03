@@ -34,9 +34,15 @@
         <Prefer32bit>false</Prefer32bit>
     </PropertyGroup>
     <ItemGroup>
+        <Reference Include="mscorlib" />
         <Reference Include="System" />
         <Reference Include="System.Core" />
         <Reference Include="System.Data" />
+        <Reference Include="System.Numerics" />
+        <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+          <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
@@ -44,6 +50,10 @@
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>
     <ItemGroup>
+      <ProjectReference Include="..\RecastSharp\RecastSharp\RecastSharp\RecastSharp.csproj">
+        <Project>{948cf43b-4917-488b-98cd-0d7deffa12e1}</Project>
+        <Name>RecastSharp</Name>
+      </ProjectReference>
       <ProjectReference Include="..\SpellRecast\SpellRecast.csproj">
         <Project>{e3f6727d-5e8f-487d-8c8d-ff76b5cb048f}</Project>
         <Name>SpellRecast</Name>
@@ -53,6 +63,9 @@
       <Content Include="d2t1.nav">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
+    </ItemGroup>
+    <ItemGroup>
+      <None Include="packages.config" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
