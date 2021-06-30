@@ -161,7 +161,7 @@ namespace SpellRecast.NavFileHelper
                         fixed (byte* bp = binaryReader.ReadBytes(sizeof(NavMeshTileHeader)))
                         {
                             tileHeader = (NavMeshTileHeader*) bp;
-                            //Console.WriteLine($"Tile {i} - Ref: {tileHeader->tileRef} Size: {tileHeader->dataSize}");
+                            Console.WriteLine($"Tile {i} - Ref: {tileHeader->tileRef} Size: {tileHeader->dataSize}");
                             pos += sizeof(NavMeshTileHeader);
                         }
 

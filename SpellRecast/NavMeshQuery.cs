@@ -10,11 +10,11 @@ namespace SpellRecast
         private IntPtr filter;
 
         private float[] tempArray = new float[3];
-        private float polyFindRange = 3;
+        private float polyFindRange = 10;
         private float[] nearestArray = new float[3];
         private float[] closest = new float[3];
         private bool tempBool = false;
-        int maxPath = 32;
+        int maxPath = 300;
 
         private float[] StartPos = new float[3];
         private float[] EndPos = new float[3];
@@ -68,7 +68,7 @@ namespace SpellRecast
                 return DtwStatus.Failure;
             }
 
-            //Console.WriteLine($"{tempArray[0]} {tempArray[1]} {tempArray[2]} ");
+            Console.WriteLine($"{FindNearestPoly(start, out spos)} ");
             if (FindNearestPoly(end, out epos) != DtwStatus.Success)
             {
                 return DtwStatus.Failure;
@@ -76,10 +76,10 @@ namespace SpellRecast
 
             SetStart(start);
             SetEnd(end);
-            //Console.WriteLine($"{tempArray[0]} {tempArray[1]} {tempArray[2]} ");
+            Console.WriteLine($"{spos} {epos}");
             
             var pathResult = DetourNative.dtwNavMeshQuery_FindPath(this.Pointer, spos, epos, ref StartPos[0], ref EndPos[0], filter, ref tempPath[0], out int pathCount, maxPath);
-
+            Console.WriteLine($"{pathResult} ");
             if (pathResult == DtwStatus.Success)
             {
                 path = new int[pathCount];
@@ -95,11 +95,11 @@ namespace SpellRecast
         
         public DtwStatus FindSmoothPath(Vector3 start, Vector3 end, int maxPath, out Vector3[] pathout)
         {
-            var result = FindPath(start, end, 100, out var path);
-
+            var result = FindPath(start, end, 300, out var path);
+            
             float[] smoothpath = new float[maxPath * 3];
             int smoothPathLength = 0;
-            
+            Console.WriteLine($"{result}");
             if (result != DtwStatus.Success)
             {
                 pathout = null;
@@ -135,5 +135,6 @@ namespace SpellRecast
             EndPos[1] = pos.Y;
             EndPos[2] = pos.Z;
         }
+        
     }
 }
