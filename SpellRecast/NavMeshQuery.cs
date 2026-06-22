@@ -4,7 +4,7 @@ using RecastSharp.DetourNative;
 
 namespace SpellRecast
 {
-    public class NavMeshQuery
+    public class NavMeshQuery : IDisposable
     {
         public IntPtr Pointer;
         private IntPtr filter;
@@ -14,12 +14,11 @@ namespace SpellRecast
         private float[] nearestArray = new float[3];
         private float[] closest = new float[3];
         private bool tempBool = false;
-        int maxPath = 300;
 
         private float[] StartPos = new float[3];
         private float[] EndPos = new float[3];
 
-        public NavMeshQuery(ref NavMesh navMesh)
+        public NavMeshQuery(NavMesh navMesh)
         {
             Pointer = DetourNative.dtwAllocNavMeshQuery();
             DetourNative.dtwNavMeshQuery_Init(Pointer, navMesh.Pointer, 2048);
@@ -54,21 +53,18 @@ namespace SpellRecast
             return result == DtwStatus.Success ? new Vector3(closest[0], closest[1], closest[2]) : Vector3.Zero;
         }
 
-        //var pathResult = DetourNative.dtwNavMeshQuery_FindPath(naviMeshQuery, spos, epos, ref startArray[0], ref endArray[0], filter, ref navPath[0], out int pathCount, maxPath);
-
         public DtwStatus FindPath(Vector3 start, Vector3 end, int maxPath, out int[] path)
         {
             int[] tempPath = new int[maxPath];
             int spos = -1;
             int epos = -1;
             path = null;
-            
+
             if (FindNearestPoly(start, out spos) != DtwStatus.Success)
             {
                 return DtwStatus.Failure;
             }
 
-            Console.WriteLine($"{FindNearestPoly(start, out spos)} ");
             if (FindNearestPoly(end, out epos) != DtwStatus.Success)
             {
                 return DtwStatus.Failure;
@@ -76,10 +72,8 @@ namespace SpellRecast
 
             SetStart(start);
             SetEnd(end);
-            Console.WriteLine($"{spos} {epos}");
-            
+
             var pathResult = DetourNative.dtwNavMeshQuery_FindPath(this.Pointer, spos, epos, ref StartPos[0], ref EndPos[0], filter, ref tempPath[0], out int pathCount, maxPath);
-            Console.WriteLine($"{pathResult} ");
             if (pathResult == DtwStatus.Success)
             {
                 path = new int[pathCount];
@@ -99,7 +93,6 @@ namespace SpellRecast
             
             float[] smoothpath = new float[maxPath * 3];
             int smoothPathLength = 0;
-            Console.WriteLine($"{result}");
             if (result != DtwStatus.Success)
             {
                 pathout = null;
@@ -111,7 +104,6 @@ namespace SpellRecast
 
             result = DetourNative.findSmoothPath(this.Pointer, this.filter, ref StartPos[0], ref EndPos[0], ref path[0], path.Length, ref smoothpath[0], ref smoothPathLength, maxPath);
 
-            Console.WriteLine($"{result} {smoothPathLength}");
             pathout = new Vector3[smoothPathLength];
             int pos = 0;
             for (int i = 0; i < smoothPathLength; i++)
@@ -135,6 +127,31 @@ namespace SpellRecast
             EndPos[1] = pos.Y;
             EndPos[2] = pos.Z;
         }
-        
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (Pointer != IntPtr.Zero)
+            {
+                DetourNative.dtwFreeNavMeshQuery(Pointer);
+                Pointer = IntPtr.Zero;
+            }
+
+            if (filter != IntPtr.Zero)
+            {
+                DetourNative.dtwFreeQueryFilter(filter);
+                filter = IntPtr.Zero;
+            }
+        }
+
+        ~NavMeshQuery()
+        {
+            Dispose(false);
+        }
     }
 }

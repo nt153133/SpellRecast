@@ -1,20 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Platforms>AnyCPU;x64</Platforms>
+    <!-- Depends on the 64-bit native RecastWrapper via RecastSharp. -->
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
 
-    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-      <PlatformTarget>x64</PlatformTarget>
-    </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RecastSharp\RecastSharp\RecastSharp\RecastSharp.csproj" />
+  </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\RecastSharp\RecastSharp\RecastSharp\RecastSharp.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
-    </ItemGroup>
+  <!-- System.Numerics.Vectors is part of the BCL on net8.0; the old package reference is no longer needed. -->
 
 </Project>

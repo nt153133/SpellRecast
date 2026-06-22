@@ -1,16 +1,16 @@
-﻿using System;
+using System;
 using System.Runtime.InteropServices;
 using hashTest.NavFileHelper;
 using RecastSharp.DetourNative;
 
 namespace SpellRecast
 {
-    public class NavMesh
+    public class NavMesh : IDisposable
     {
         public IntPtr Pointer;
-        
+
         public DtwStatus Status;
-        
+
         private DtNavMeshParams _dtNavMeshParams;
 
         public unsafe NavMesh(NavMeshSetHeader* header)
@@ -33,22 +33,32 @@ namespace SpellRecast
         {
             unsafe
             {
-                IntPtr result = IntPtr.Zero;
-                var dataPtr = dtAllocDefault(dataSize);
+                // Tile data must come from Detour's allocator: the DT_TILE_FREE_DATA (0x01) flag
+                // hands ownership to the navmesh, which releases it with dtFree on destruction.
+                var dataPtr = DetourNative.dtwAlloc(dataSize);
                 Marshal.Copy(data, 0, dataPtr, data.Length);
-                var otherResult = DetourNative.dtwNavMesh_AddTile(Pointer, (byte*) dataPtr.ToPointer(), dataSize, 0x01, lastRef, result);
-                return otherResult;
+                return DetourNative.dtwNavMesh_AddTile(Pointer, (byte*) dataPtr.ToPointer(), dataSize, 0x01, lastRef, IntPtr.Zero);
             }
         }
-        
-        internal static IntPtr dtAllocDefault(int size)
+
+        public void Dispose()
         {
-            return Marshal.AllocHGlobal(size);
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
-        internal static void dtFree(IntPtr ptr)
+        protected virtual void Dispose(bool disposing)
         {
-            Marshal.FreeHGlobal(ptr);
+            if (Pointer != IntPtr.Zero)
+            {
+                DetourNative.dtwFreeNavMesh(Pointer);
+                Pointer = IntPtr.Zero;
+            }
+        }
+
+        ~NavMesh()
+        {
+            Dispose(false);
         }
     }
 }
